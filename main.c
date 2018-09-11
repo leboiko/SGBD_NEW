@@ -61,8 +61,8 @@ int main() {
 
                 posicoesOcupadas += 1;
             } else {
-                if ((((compare_strings(struct_array[i].operacao, "C") == 0) ||
-                      (compare_strings(struct_array[i].operacao, "c") == 0)))) {
+                if ((compare_strings(struct_array[i].operacao, "C")) ||
+                      (compare_strings(struct_array[i].operacao, "c"))) {
                     struct_vida[struct_array[i].id - 1].morte = struct_array[i].tempo;
                 }
             }
@@ -89,26 +89,40 @@ int main() {
     int numBatchs = 0;
     int fimBloco = struct_vida[0].morte;
 
+    printf("\n\n%d---\n\n",struct_vida[0].morte);
+
+
+
     int batchLimits[posicoesOcupadas];
 
 
 
     for (int j = 1; j < posicoesOcupadas; ++j) {
-
-        if(struct_vida[j].nascimento < fimBloco) {
-            if(struct_vida[j].morte > fimBloco) {
-                fimBloco = struct_vida[j].morte;
-            }
+        if (fimBloco == 0){ // nao tem commits
+            fimBloco = i;
+            break;
         } else {
-            batchLimits[numBatchs] = fimBloco;
-            numBatchs += 1;
-            fimBloco = struct_vida[j].morte;
-            // primeira vez que preencheu um batch
-        }
+            if(struct_vida[j].nascimento < fimBloco) {
 
+                if(struct_vida[j].morte > fimBloco) {
+                    fimBloco = struct_vida[j].morte;
+                }
+            } else {
+//                printf("entrou aqui %d\n", struct_vida[j].morte);
+                batchLimits[numBatchs] = fimBloco;
+                numBatchs += 1;
+                fimBloco = struct_vida[j].morte;
+                // primeira vez que preencheu um batch
+            }
+        }
     }
     //     Adiciono o ultimo limite como sendo a ultima instancia
     batchLimits[numBatchs] = fimBloco;
+
+    for (int m = 0; m < numBatchs; ++m) {
+        printf("\n Limites %d\n", batchLimits[m]);
+    }
+
     numBatchs += 1;
     int arrayDeTransacoesPorBloco[posicoesOcupadas];
     int realSize = 0;
@@ -119,8 +133,8 @@ int main() {
 
         checkTransactions(inicioBloco, batchLimits[k], posicoesOcupadas, &realSize, arrayDeTransacoesPorBloco,
                           struct_array);
-
-//        printf("\nTamanho da tupla %d\n", realSize);
+//
+//        printf("\nTamanho da tupla %d\n", realSize + 1);
 //        struct Graph* graph = createGraph(maxSize);
 
         buildGraph(inicioBloco, batchLimits[k], struct_array, &sizeTuple, struct_tuples, "W", "R", MAX, adj);

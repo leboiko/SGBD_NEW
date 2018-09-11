@@ -82,9 +82,11 @@ extern bool compare_strings(char a[], char b[])
 extern void checkTransactions(int chao, int teto, int size, int *realSize, int * arr, Processo *struct_transactions)
 {
     for (int i = chao; i < teto; ++i) {
+        printf("\n o chao eh %d e o teto eh %d\n", chao, teto);
         if (!isRepeated(struct_transactions[i].id, arr, size)) {
             arr[*realSize] = struct_transactions[i].id;
             *realSize += 1;
+            printf("\n T%d encontrada\n", struct_transactions[i].id);
         }
     }
 }
