@@ -62,10 +62,16 @@ extern bool compare_strings(char a[], char b[])
 extern void checkTransactions(int chao, int teto, int size, int *realSize, int * arr, Processo *struct_transactions)
 {
     for (int i = chao; i < teto; ++i) {
+//        printf("\n TTT %d\n", arr[0]);
+        if (i == chao){
+            arr[*realSize] = struct_transactions[i].id;
+            *realSize += 1;
+//            printf("\n T%d encontrada\n", struct_transactions[i].id);
+        }
         if (!isRepeated(struct_transactions[i].id, arr, size)) {
             arr[*realSize] = struct_transactions[i].id;
             *realSize += 1;
-            printf("\n T%d encontrada\n", struct_transactions[i].id);
+//            printf("\n T%d encontrada\n", struct_transactions[i].id);
         }
     }
 }
@@ -85,11 +91,38 @@ extern void buildGraph(int chao, int teto, Processo *struct_transactions, int *s
                     struct_tuples[*sizeTuple] = newTuple;
                     *sizeTuple += 1;
                     adj[struct_transactions[i].id-1][struct_transactions[j].id-1] = 1;
-                    printf("\n\n(%d -> %d)\n\n", struct_transactions[i].id, struct_transactions[j].id);
+//                    printf("\n\n(%d -> %d)\n\n", struct_transactions[i].id, struct_transactions[j].id);
                 }
             }
         }
     }
+}
+
+extern void testeVisao(int chao, int teto, Processo *struct_transactions, int numTransacoes, int * arr) {
+    Processo struct_batch[sizeof(Processo) * numTransacoes]; // array que vai receber apenas instancias da mesma transacao
+    Processo instancia;
+    int transacoesBatch = 0;
+
+    for (int j = 0; j < numTransacoes; ++j) { // para cada transacao encontrada
+
+        for (int i = chao; i < teto; ++i) { // para cada transacao do bloco
+            if(struct_transactions[i].id == arr[j]) { // se tiver o mesmo id do primeiro for
+                struct_batch[transacoesBatch] = struct_transactions[i];
+                transacoesBatch += 1;
+            }
+        }
+
+        printf("\n\n-----\n\n");
+
+        for (int k = 0; k < transacoesBatch; ++k) {
+            printf("\n %d %d %s %s\n", struct_batch[k].tempo, struct_batch[k].id,
+                    struct_batch[k].operacao, struct_batch[k].atributo);
+        }
+
+        transacoesBatch = 0;
+
+    }
+
 }
 
 extern void printTransactions(int n, Processo *struct_transactions)

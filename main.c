@@ -8,13 +8,8 @@
 #define MAX 100
 bool ciclo = false;
 int current_array_size = 0;
-int maxSize = 100;
-int n;    /*Number of vertices in the graph */
 int adj[MAX][MAX];
-void create_graph( );
-
 int state[MAX];
-
 void DF_Traversal(int n);
 void DFS(int v, int n);
 
@@ -39,6 +34,7 @@ int main() {
 
     while (fscanf(stdin, "%d %d %c %c", &novaTransacao.tempo, &novaTransacao.id, novaTransacao.operacao,
                   novaTransacao.atributo) != EOF) {
+
         struct_array[i] = novaTransacao;
 
         if (i == 0) {
@@ -52,8 +48,6 @@ int main() {
         } else {
             if (!isRepeated(struct_array[i].id, transacoes, i)) {
                 transacoes[posicoesOcupadas] = struct_array[i].id;
-
-
                 novaInstancia.id = struct_array[i].id;
                 novaInstancia.nascimento = struct_array[i].tempo;
                 novaInstancia.morte = 0;
@@ -82,7 +76,6 @@ int main() {
     // Fim da leitura
 
     printTransactions(i, struct_array);
-
 
 
     int inicioBloco = 0;
@@ -123,12 +116,14 @@ int main() {
     int n;
     int sizeTuple = 0;
 
-
+//    printf("Bloco inicia em %d \n", inicioBloco);
 
     for (int k = 0; k < numBatchs; ++k) {
 
         checkTransactions(inicioBloco, batchLimits[k], posicoesOcupadas, &realSize, arrayDeTransacoesPorBloco,
                           struct_array);
+
+//        testeVisao(inicioBloco, batchLimits[k], struct_array, realSize, arrayDeTransacoesPorBloco);
 
         buildGraph(inicioBloco, batchLimits[k], struct_array, &sizeTuple, struct_tuples, "W", "R", MAX, adj);
         buildGraph(inicioBloco, batchLimits[k], struct_array, &sizeTuple, struct_tuples, "R", "W", MAX, adj);
@@ -136,17 +131,17 @@ int main() {
 
         n = realSize;
         if (n > 0) {
-            for (int j = 0; j < realSize; ++j) {
-                for (int l = 0; l < realSize; ++l) {
-                    printf("%d ", adj[j][l]);
-                }
-                printf("\n");
-            }
-            DF_Traversal(realSize);
+//            for (int j = 0; j < MAX; ++j) {
+//                for (int l = 0; l < MAX; ++l) {
+//                    printf("%d ", adj[j][l]);
+//                }
+//                printf("\n");
+//            }
+            DF_Traversal(MAX);
         }
 
         // imprimo a transacao
-        printf("\n%d ", k+1);
+//        printf("\n%d ", k+1);
         for (int l = 0; l < realSize; ++l) {
             if (ciclo) {
                 if (l == 0) {
@@ -176,8 +171,8 @@ int main() {
         inicioBloco = batchLimits[k];
 
         // limpo o adj para o proximo batch
-        for (int m = 0; m < realSize; ++m) {
-            for (int j = 0; j < realSize; ++j) {
+        for (int m = 0; m < MAX; ++m) {
+            for (int j = 0; j < MAX; ++j) {
                 adj[m][j] = 0;
             }
         }
