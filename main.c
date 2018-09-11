@@ -6,7 +6,7 @@
 #define visited 2
 #define finished 3
 #define MAX 100
-
+bool ciclo = false;
 int current_array_size = 0;
 int maxSize = 100;
 int n;    /*Number of vertices in the graph */
@@ -15,7 +15,7 @@ void create_graph( );
 
 int state[MAX];
 
-void DF_Traversal();
+void DF_Traversal(int n);
 void DFS(int v, int n);
 
 int main() {
@@ -89,7 +89,6 @@ int main() {
     int numBatchs = 0;
     int fimBloco = struct_vida[0].morte;
 
-    printf("\n\n%d---\n\n",struct_vida[0].morte);
 
 
 
@@ -118,34 +117,26 @@ int main() {
     }
     //     Adiciono o ultimo limite como sendo a ultima instancia
     batchLimits[numBatchs] = fimBloco;
-
-    for (int m = 0; m < numBatchs; ++m) {
-        printf("\n Limites %d\n", batchLimits[m]);
-    }
-
     numBatchs += 1;
     int arrayDeTransacoesPorBloco[posicoesOcupadas];
     int realSize = 0;
     int n;
     int sizeTuple = 0;
 
+
+
     for (int k = 0; k < numBatchs; ++k) {
 
         checkTransactions(inicioBloco, batchLimits[k], posicoesOcupadas, &realSize, arrayDeTransacoesPorBloco,
                           struct_array);
-//
-//        printf("\nTamanho da tupla %d\n", realSize + 1);
-//        struct Graph* graph = createGraph(maxSize);
 
         buildGraph(inicioBloco, batchLimits[k], struct_array, &sizeTuple, struct_tuples, "W", "R", MAX, adj);
         buildGraph(inicioBloco, batchLimits[k], struct_array, &sizeTuple, struct_tuples, "R", "W", MAX, adj);
         buildGraph(inicioBloco, batchLimits[k], struct_array, &sizeTuple, struct_tuples, "W", "W", MAX, adj);
 
-//        printf("\n\n O tamanho real é %d \n\n", realSize);
         n = realSize;
         if (n > 0) {
             for (int j = 0; j < realSize; ++j) {
-//                printf("\n Estado de %d : %d\n", j, state[j]);
                 for (int l = 0; l < realSize; ++l) {
                     printf("%d ", adj[j][l]);
                 }
@@ -154,23 +145,45 @@ int main() {
             DF_Traversal(realSize);
         }
 
-
-
-
-
         // imprimo a transacao
         printf("\n%d ", k+1);
         for (int l = 0; l < realSize; ++l) {
-
-            if (l == 0) {
-                printf("%d,", arrayDeTransacoesPorBloco[l]);
+            if (ciclo) {
+                if (l == 0) {
+                    printf("%d,", arrayDeTransacoesPorBloco[l]);
+                } else {
+                    if (l == realSize -1) {
+                        printf("%d NS\n", arrayDeTransacoesPorBloco[l]);
+                    } else {
+                        printf("%d,", arrayDeTransacoesPorBloco[l]);
+                    }
+                }
             } else {
-                printf("%d \n", arrayDeTransacoesPorBloco[l]);
+                if (l == 0) {
+                    printf("%d,", arrayDeTransacoesPorBloco[l]);
+                } else {
+                    if (l == realSize -1) {
+                        printf("%d SS\n", arrayDeTransacoesPorBloco[l]);
+                    } else {
+                        printf("%d,", arrayDeTransacoesPorBloco[l]);
+                    }
+                }
             }
-
         }
+
+        ciclo = false;
+
         inicioBloco = batchLimits[k];
+
+        // limpo o adj para o proximo batch
+        for (int m = 0; m < realSize; ++m) {
+            for (int j = 0; j < realSize; ++j) {
+                adj[m][j] = 0;
+            }
+        }
+
         realSize = 0;
+
         memset(arrayDeTransacoesPorBloco, 0, posicoesOcupadas);
     }
 }
@@ -191,7 +204,7 @@ void DF_Traversal(int n)
         if(state[v]==initial)
             DFS(v, n);
     }
-    printf("\nGraph is Acyclic\n");
+//    printf("\nGraph is Acyclic\n");
 }/*End of DF_Traversal( )*/
 
 void DFS(int v, int n)
@@ -214,13 +227,11 @@ void DFS(int v, int n)
 
             else if(state[i]==visited)
             {
-                printf("\nBack edge  (%d -> %d) found\n", v+1, i+1);
-                printf("\nGraph is cyclic\n");
-//                isCyclic = true;
-                exit(1);
-//                continue;
+//                printf("\nBack edge  (%d -> %d) found\n", v+1, i+1);
+//                printf("\nGraph is cyclic\n");
+                ciclo = true;
+                return;
             }
-//            printf("\nEstado é %d do vertice %d\n", state[v], v);
         }
     }
     state[v] = finished;
