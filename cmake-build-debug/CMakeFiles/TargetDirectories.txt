@@ -1,0 +1,3 @@
+/Users/luiseduardoboikoferreira/CLionProjects/SGBD/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/luiseduardoboikoferreira/CLionProjects/SGBD/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/luiseduardoboikoferreira/CLionProjects/SGBD/cmake-build-debug/CMakeFiles/SGBD.dir

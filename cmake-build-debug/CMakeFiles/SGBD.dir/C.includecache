@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/luiseduardoboikoferreira/CLionProjects/SGBD/auxFunctions.h
+stdbool.h
+-
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+
+/Users/luiseduardoboikoferreira/CLionProjects/SGBD/main.c
+stdio.h
+-
+stdlib.h
+-
+auxFunctions.h
+/Users/luiseduardoboikoferreira/CLionProjects/SGBD/auxFunctions.h
+
