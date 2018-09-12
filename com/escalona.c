@@ -22,9 +22,7 @@ int main() {
     int numLinhas = 10;
     current_array_size = numLinhas;
     size_t i = 0;
-    int idAtual = 0;
     int posicoesOcupadas = 0;
-    int incidencia = 0;
 
 
     int* transacoes = (int*) malloc(numLinhas*sizeof(int));
