@@ -123,7 +123,7 @@ int main() {
         checkTransactions(inicioBloco, batchLimits[k], posicoesOcupadas, &realSize, arrayDeTransacoesPorBloco,
                           struct_array);
 
-//        testeVisao(inicioBloco, batchLimits[k], struct_array, realSize, arrayDeTransacoesPorBloco);
+
 
         buildGraph(inicioBloco, batchLimits[k], struct_array, &sizeTuple, struct_tuples, "W", "R", MAX, adj);
         buildGraph(inicioBloco, batchLimits[k], struct_array, &sizeTuple, struct_tuples, "R", "W", MAX, adj);
@@ -141,14 +141,15 @@ int main() {
         }
 
         // imprimo a transacao
-//        printf("\n%d ", k+1);
+        printf("\n%d ", k+1);
         for (int l = 0; l < realSize; ++l) {
             if (ciclo) {
                 if (l == 0) {
                     printf("%d,", arrayDeTransacoesPorBloco[l]);
                 } else {
                     if (l == realSize -1) {
-                        printf("%d NS\n", arrayDeTransacoesPorBloco[l]);
+                        printf("%d NS ", arrayDeTransacoesPorBloco[l]);
+                        testeVisao(inicioBloco, batchLimits[k], struct_array, realSize);
                     } else {
                         printf("%d,", arrayDeTransacoesPorBloco[l]);
                     }
@@ -158,7 +159,8 @@ int main() {
                     printf("%d,", arrayDeTransacoesPorBloco[l]);
                 } else {
                     if (l == realSize -1) {
-                        printf("%d SS\n", arrayDeTransacoesPorBloco[l]);
+                        printf("%d SS ", arrayDeTransacoesPorBloco[l]);
+                        testeVisao(inicioBloco, batchLimits[k], struct_array, realSize);
                     } else {
                         printf("%d,", arrayDeTransacoesPorBloco[l]);
                     }

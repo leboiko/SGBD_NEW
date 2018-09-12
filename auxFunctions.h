@@ -98,31 +98,53 @@ extern void buildGraph(int chao, int teto, Processo *struct_transactions, int *s
     }
 }
 
-extern void testeVisao(int chao, int teto, Processo *struct_transactions, int numTransacoes, int * arr) {
-    Processo struct_batch[sizeof(Processo) * numTransacoes]; // array que vai receber apenas instancias da mesma transacao
-    Processo instancia;
-    int transacoesBatch = 0;
+extern int countWrites(int chao, int teto, Processo *struct_transactions) {
+    int counter = 0;
+    int ids[teto-chao];
+    int posicoesOcupadas = 0;
 
-    for (int j = 0; j < numTransacoes; ++j) { // para cada transacao encontrada
+//    ids[posicoesOcupadas] = struct_transactions[chao].id; // adiciono o primeiro elemento a lista
+//    posicoesOcupadas += 1;
 
-        for (int i = chao; i < teto; ++i) { // para cada transacao do bloco
-            if(struct_transactions[i].id == arr[j]) { // se tiver o mesmo id do primeiro for
-                struct_batch[transacoesBatch] = struct_transactions[i];
-                transacoesBatch += 1;
+    for (int i = chao; i < teto; ++i) {
+        if (compare_strings(struct_transactions[i].operacao, "W")) {
+            if (!isRepeated(struct_transactions[i].id, ids, posicoesOcupadas)) {
+                ids[posicoesOcupadas] = struct_transactions[i].id;
+                posicoesOcupadas +=1;
+                counter += 1;
             }
         }
-
-        printf("\n\n-----\n\n");
-
-        for (int k = 0; k < transacoesBatch; ++k) {
-            printf("\n %d %d %s %s\n", struct_batch[k].tempo, struct_batch[k].id,
-                    struct_batch[k].operacao, struct_batch[k].atributo);
-        }
-
-        transacoesBatch = 0;
-
     }
 
+    return counter;
+}
+
+extern void testeVisao(int chao, int teto, Processo *struct_transactions, int numTransacoes) {
+
+    bool rxAfterWx = false;
+
+    if (countWrites(chao, teto, struct_transactions) < numTransacoes) {
+        for (int i = chao; i < teto; ++i) {
+            if (compare_strings(struct_transactions[i].operacao, "W")) {
+                for (int j = i+1; j < teto; ++j) {
+                    if (compare_strings(struct_transactions[j].operacao, "R") &&
+                            (struct_transactions[i].id != struct_transactions[j].id)) {
+                            rxAfterWx = true;
+                    }
+                }
+            }
+        }
+    }
+
+    if (rxAfterWx) {
+        printf("NV\n");
+    } else {
+        if (countWrites(chao, teto, struct_transactions) < numTransacoes) {
+            printf("SV\n");
+        } else {
+            printf("NV\n");
+        }
+    }
 }
 
 extern void printTransactions(int n, Processo *struct_transactions)
